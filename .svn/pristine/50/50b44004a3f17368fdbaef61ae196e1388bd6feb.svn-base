@@ -1,0 +1,3 @@
+<!-- HTML-Template fuer einen Column-Header mit Sortierfunktion -->
+<span data-ng-hide="column.orderField">{{column.label}}</span>
+<a data-ng-show="column.orderField" href="" class="flex-shrinkable nodeco" data-ng-click="query.toggleSort(column.orderField, column.orderIgnoreCase)" title="{{query.getSortLinkTooltip(column.orderField)}}"><span class="text-shrinkable">{{column.label}}</span><span data-ng-show="query.sort.orderBy==column.orderField" class="icon-right small"><i data-ng-hide="query.isLoading(column.orderField)" class="glyphicon" data-ng-class="{'glyphicon-chevron-up':!query.sort.reverse,'glyphicon-chevron-down':query.sort.reverse}"></i><i data-ng-show="query.isLoading(column.orderField)" class="fa fa-refresh fa-spin fa-fw"></i></span></a>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html data-ng-app="wetterApp" style="background:url(./images/wetter_bewoelkt.jpg) 0 0 no-repeat fixed;
+     background-size:cover;
+     -moz-background-size:cover;
+     -webkit-background-size:cover;">
+     
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- Bootstrap core CSS -->
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap theme -->
+<link href="./css/bootstrap-theme.min.css" rel="stylesheet">
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<!--
+    <link href="./css/ie10-viewport-bug-workaround.css" rel="stylesheet"> 
+  	-->
+<!-- Custom styles for this template -->
+<!-- 
+<link href="app.css" rel="stylesheet">
+-->
+
+</head>
+
+<body>
+
+	<div id="content"
+		style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; overflow: auto;">
+		<!-- Menue -->
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">WW's WetterApp</a>
+				</div>
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="./index.html#!/wetterByOrt/Berlin">Home</a></li>
+					<li><a href="../index.html#!/wetterByOrt/Berlin">Wetter in
+							Berlin Pankow</a></li>
+					<li><a href="../index.html#!/wetterByOrt/Palma">Wetter in
+							Palma de Mallorca</a></li>
+					<li><a href="../index.html#!/wetterdaten">&Uuml;bersicht</a></li>
+					<li><a href="../index.html#!/orte">Datenpflege Orte</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<div data-ng-view></div>
+
+		<!-- Angular 1.6.4 -->
+		<!-- -->
+		<script src="lib/angular-1.6.4/angular/angular.js"></script>
+		<script src="lib/angular-1.6.4/angular-animate/angular-animate.js"></script>
+		<script src="lib/angular-1.6.4/angular-route/angular-route.js"></script>
+		<script src="lib/angular-1.6.4/angular-resource/angular-resource.js"></script>
+		<script src="lib/angular-1.6.4/angular-touch/angular-touch.js"></script>
+
+		<!-- Angular locale -->
+		<script src="lib/angular-1.6.4/i18n/angular-locale_de-de.js"></script>
+		<script src="lib/angular-1.6.4/angular-cookies/angular-cookies.js"></script>
+
+		<!-- Ui Bootstrap -->
+		<script
+			src="lib/ui-bootstrap-2.5.0/ui-bootstrap/ui-bootstrap-tpls-2.5.0.min.js"></script>
+
+		<!-- App -->
+		<script src="appscripts/app.js"></script>
+		<script src="appscripts/wetterdaten/wetterdaten_list.controller.js"></script>
+		<script src="appscripts/wetterdaten/wetterdaten.service.js"></script>
+		<script src="appscripts/wetterdaten/wetter_online.controller.js"></script>
+		<script src="appscripts/wetterdaten/wetter_online.service.js"></script>
+		<script src="appscripts/ort/ort.service.js"></script>
+		<script src="appscripts/ort/ort_list.controller.js"></script>
+		<script src="appscripts/ort/ort_detail.controller.js"></script>
+		<script
+			src="appscripts/wetterdaten/wetter_online.palma_de_mallorca.controller.js"></script>
+
+	</div>
+
+</body>
+
+</html>

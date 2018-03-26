@@ -1,0 +1,37 @@
+"use strict";
+
+/* Fragt mit Hilfe des Services WetterOnlineService Wetterinformationen über die OpenweatherMap-REST-Schnittstelle aus dem Internet ab
+ * 
+ */
+wetterApp.controller('WetterOnlineCtrl', function($scope, $log, $routeParams, $resource, $cookies, $locale, WetterOnlineService, Flash) {
+
+	var ort = $routeParams.ort;
+	$scope.isAdmin = false;
+ 
+	$log.debug('+++ Ort: ' + ort);
+	$log.debug('+++ Locale: ' + $locale.id);
+  
+	WetterOnlineService.byOrtsbezeichnung({ort: ort}).$promise
+	.then(function(data){
+		$log.debug('Daten wurden geladen');
+		$scope.wetter = data;
+		$log.debug(data);
+		$log.debug(data.wetterbeschreibungen);
+		$log.debug(data.wetterbeschreibungen.length);
+		if (data.wetterbeschreibungen.length > 0){	  
+			$log.debug('Wetterbeschreibung vorhanden.');
+			$log.debug(data.wetterbeschreibungen[0].description);
+			$log.debug(data.wetterbeschreibungen[0].iconUrl);
+			$scope.wetterBeschreibung = data.wetterbeschreibungen[0].description;
+			$scope.wetterIconUrl = data.wetterbeschreibungen[0].iconUrl;
+		} else {
+			$log.debug('Keine Wetterbeschreibung vorhanden.');
+		}
+	  
+	})
+  	.catch(function(err) {
+  		$log.error('loading OpenWeatherMap-Data failed: ' + angular.toJson(err.data || err));
+		Flash.create('error', 'Fehler beim Laden der Wetterdaten aus dem Internet! - Bitte pr&uuml;fen Sie die Onlineverbindung! - ' + err);
+	});;  
+
+});

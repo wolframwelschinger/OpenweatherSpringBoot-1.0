@@ -1,0 +1,178 @@
+package de.ww.openweather.controllers;
+
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import de.ww.openweather.utils.OpenWeatherMapUtil;
+import de.ww.openweather.utils.WetterBeschreibung;
+import de.ww.openweather.utils.WetterDTO;
+import de.ww.openweather.utils.persistence.Wetteraufzeichnung;
+import de.ww.openweather.utils.repositories.WetteraufzeichnungRepository;
+
+@Controller
+@RequestMapping("wetter")
+public class WetterController {
+
+	static final String url_London_uk = "http://api.openweathermap.org/data/2.5/find?q=London,SW5&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+
+	static final String url_Berlin_Pankow = "http://api.openweathermap.org/data/2.5/find?q=Berlin,13187&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+
+	static final String url_Palma_de_Mallorca = "http://api.openweathermap.org/data/2.5/find?q=Palma%20de%20Mallorca&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+
+	static final String url_Alcudia = "http://api.openweathermap.org/data/2.5/find?q=Alcudia&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+	
+	@Autowired
+	private WetteraufzeichnungRepository wetteraufzeichnungRepo;
+	
+	private Logger log = LogManager.getLogger(this.getClass().getName());
+	
+	/**
+	 * Gibt das Wetter in Berlin Pankow als HTML-Response zur&uuml;ck
+	 * http://127.0.0.1:9999/wetter/html/berlin_pankow
+	 * @return das Wetter in Berlin Pankow als HTML-Response
+	 */	
+	@RequestMapping(value="/html/berlin_pankow", method = RequestMethod.GET, produces = "text/html")
+	public @ResponseBody String getWetterBerlin() {
+		WetterDTO dtoPankow = OpenWeatherMapUtil.getWetter(url_Berlin_Pankow);
+		storeWetteraufzeichnung(dtoPankow);
+		return dtoPankow.getHtml();
+	}
+	
+	/**
+	 * Gibt das Wetter in Palma als HTML-Response zur&uuml;ck
+	 * http://127.0.0.1:9999/wetter/html/palma
+	 * @return das Wetter in Palma als HTML-Response
+	 */
+	@RequestMapping(value="/html/palma", method = RequestMethod.GET, produces = "text/html")
+	public @ResponseBody String getWetterPalma() {
+		WetterDTO dtoPalma = OpenWeatherMapUtil.getWetter(url_Palma_de_Mallorca);
+		storeWetteraufzeichnung(dtoPalma);
+		return dtoPalma.getHtml();
+	}
+	
+	
+	/**
+	 * Gibt das Wetter in Palma als JSON-Response zur&uuml;ck
+	 * http://127.0.0.1:9999/wetter/json/palma
+	 * @return das Wetter in Palma als HTML-Response
+	 */
+	@RequestMapping(value="/json/palma", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody WetterDTO getJsonWetterPalma() {
+		WetterDTO dtoPalma = OpenWeatherMapUtil.getWetter(url_Palma_de_Mallorca);
+		return dtoPalma;
+	}	
+	
+	@RequestMapping(value="/html/wetterdaten", method = RequestMethod.GET, produces = "text/html")
+	public @ResponseBody String getWetterDaten() {
+		List<Wetteraufzeichnung> wetteraufzeichnungen = (List<Wetteraufzeichnung>) wetteraufzeichnungRepo.findAll();
+		StringBuilder html = new StringBuilder("<table>\n");
+		for (Wetteraufzeichnung wa : wetteraufzeichnungen) {
+			String s = "Das Wetter in " + wa.getOrt() 
+			+ " um " + wa.getZeitString()
+			+ ": Temperatur " + wa.getTemperatur() + "°C"
+			+ ", " + wa.getWetterbeschreibung();
+			html.append("<tr><td>" + s + "</td><td><img src=\""+ wa.getIconUrl() + "\"/></td></tr>\n");		
+			log.debug(s);
+		}
+		html.append("</table>");
+		return html.toString();
+	}	
+
+	@RequestMapping(value="/html/wetterdaten/palma", method = RequestMethod.GET, produces = "text/html")
+	public @ResponseBody String getWetterDatenPalma() {
+//		List<Wetteraufzeichnung> wetteraufzeichnungen = wetteraufzeichnungRepo.findByOrtOrderByIdDesc("Palma de Mallorca");
+		List<Wetteraufzeichnung> wetteraufzeichnungen = wetteraufzeichnungRepo.findByOrtLikeOrderByIdDesc("Palma%");
+		StringBuilder html = new StringBuilder("<table>\n");
+		for (Wetteraufzeichnung wa : wetteraufzeichnungen) {
+			String s = "Das Wetter in " + wa.getOrt() 
+			+ " um " + wa.getZeitString()
+			+ ": Temperatur " + wa.getTemperatur() + "°C"
+			+ ", " + wa.getWetterbeschreibung();
+			html.append("<tr><td>" + s + "</td><td><img src=\""+ wa.getIconUrl() + "\"/></td></tr>\n");		
+			log.debug(s);
+		}
+		html.append("</table>");
+		return html.toString();
+	}		
+	
+	/**
+	 * Speichert einen Wetterdatensatz	
+	 * @param wetterDTO DTO eines Wetterdatensatzes
+	 */
+	private void storeWetteraufzeichnung(WetterDTO wetterDTO) {
+		Wetteraufzeichnung wetter = new Wetteraufzeichnung();
+		wetter.setOrt(wetterDTO.getOrt());
+		wetter.setLand(wetterDTO.getLand());
+		wetter.setGeoBreite(wetterDTO.getGeoBreite());
+		wetter.setGeoLaenge(wetterDTO.getGeoLaenge());
+		wetter.setTemperatur(wetterDTO.getTemperatur());
+		wetter.setTemperatur_min(wetterDTO.getTemperatur_min());
+		wetter.setTemperatur_max(wetterDTO.getTemperatur_max());
+		wetter.setLuftDruck(wetterDTO.getLuftDruck());
+		wetter.setLuftFeuchtigkeit(wetterDTO.getLuftFeuchtigkeit());
+		wetter.setWindGeschwindigkeit(wetterDTO.getWindGeschwindigkeit());
+		wetter.setWindRichtung(wetterDTO.getWindRichtung());
+		wetter.setWolken(wetterDTO.getWolken());
+		wetter.setZeitStempel(wetterDTO.getZeitStempel());
+		wetter.setZeitString(wetterDTO.getZeitString());
+		
+		if (wetterDTO.getWetterbeschreibungen().length > 0) {
+			for (int y = 0; y < wetterDTO.getWetterbeschreibungen().length; y++) {
+				WetterBeschreibung wetterBeschreibung = wetterDTO.getWetterbeschreibungen()[y];
+				wetter.setWetterbeschreibung(wetterBeschreibung.getDescription());
+				wetter.setIconUrl(wetterBeschreibung.getIconUrl());
+			}
+		} else {
+			log.info("Keine weiteren Wetterinformationen");
+		}		
+		
+		wetteraufzeichnungRepo.save(wetter);	
+		log.info("Wetteraufzeichnung fuer " + wetterDTO.getOrt() + " wurde gespeichert");
+	}
+	
+	
+	// <<<<<<<<<<<<<<<<<<<<<< REST - CALLS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	
+	
+	
+	/**
+	 * http://127.0.0.1:9999/wetter/all
+	 * @return List mit Wetterdatens&auml;tzen
+	 */
+	@RequestMapping(value="/all", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody List<Wetteraufzeichnung> getWetterdatenAll() {
+		List<Wetteraufzeichnung> wetteraufzeichnungen = (List<Wetteraufzeichnung>) wetteraufzeichnungRepo.findAll();
+		return wetteraufzeichnungen;
+	}
+	
+	/**
+	 * http://127.0.0.1:9999/wetter/byId/4
+	 * @param id PK des Wettersdatensatzes
+	 * @return Wetterdatensatz mit PK=4
+	 */
+	@RequestMapping(value="/byId/{id}", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody Wetteraufzeichnung getWetterdatenById(@PathVariable Long id) {
+		Wetteraufzeichnung wetteraufzeichnung = wetteraufzeichnungRepo.findOne(id);
+		return wetteraufzeichnung;
+	}	
+	
+	/**
+	 * Gibt das Wetter in Berlin Pankow als HTML-Response zur&uuml;ck
+	 * http://127.0.0.1:9999/wetter/html/berlin_pankow
+	 * @return das Wetter in Berlin Pankow als HTML-Response
+	 */	
+	@RequestMapping(value="/berlin_pankow", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody WetterDTO getWetterBerlinPankow() {
+		WetterDTO dtoPankow = OpenWeatherMapUtil.getWetter(url_Berlin_Pankow);
+		return dtoPankow;
+	}	
+	
+}

@@ -1,0 +1,19 @@
+package de.ww.openweather.utils.repositories;
+
+import java.util.List;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import de.ww.openweather.utils.persistence.Wetteraufzeichnung;
+
+//https://docs.spring.io/spring-data/jpa/docs/1.4.3.RELEASE/reference/html/jpa.repositories.html
+public interface WetteraufzeichnungRepository extends PagingAndSortingRepository<Wetteraufzeichnung, Long>{
+	
+	List<Wetteraufzeichnung> findByOrt(String ort);
+	
+	List<Wetteraufzeichnung> findByOrtOrderByIdDesc(String ort);
+	
+	List<Wetteraufzeichnung> findByOrtLikeOrderByIdDesc(String ort);
+	
+
+}

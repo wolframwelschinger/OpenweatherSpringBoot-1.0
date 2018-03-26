@@ -1,0 +1,41 @@
+<h2 data-ng-show="isAdmin">Administrationsbereich</h2>
+
+<br />
+<div style="background-color: rgba(255, 255, 255, 0.8); margin: 10px;">
+	<div style="margin: 10px;">
+		<div style="text-align: center; margin: 10px;">
+			<h3>&Uuml;bersicht Orte</h3>
+		</div>
+		<table class="table table-striped" style="background-color: rgba(255, 255, 255, 0.8);">
+			<tbody>
+				<tr>
+					<th>Id</th>
+					<th>Ort</th>
+					<th>Land</th>
+					<th>Aktion</th>
+				</tr>
+				<tr data-ng-repeat="ort in orte">
+					<td data-ng-bind="ort.id"></td>
+					<td data-ng-bind="ort.ort"></td>
+					<td data-ng-bind="ort.land"></td>
+					<td>
+						<a data-ng-href="#!/ortEdit/{{ort.id}}">Anzeigen</a>				
+						<a data-ng-click="openConfirmDialog(ort)">L&ouml;schen</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<div style="background-color: rgba(255, 255, 255, 0.8); margin: 0px; padding: 10px;">
+			<div style="text-align: center; margin: 10px;">
+				<a data-ng-href="#!/ortNew">Ort anlegen</a>
+				<ng-include src="'appscripts/common/pager.html'"></ng-include>
+			</div>
+		</div>		
+		
+	</div>
+	
+
+	
+</div>
+

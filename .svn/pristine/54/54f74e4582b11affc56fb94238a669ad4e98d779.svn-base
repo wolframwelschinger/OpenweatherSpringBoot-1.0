@@ -1,0 +1,21 @@
+"use strict";
+
+wetterApp.controller('WetterdatenListCtrl', function($scope, $resource, $cookies, $locale, WetterDatenService, WetterService) {
+
+  $scope.isAdmin = false;
+
+  console.log('+++ Locale: ' + $locale.id);
+
+  /*
+  $scope.wetterdaten = WetterDatenService.getWetterdaten();
+  */
+  
+  /* Laden der Wetter-Entries per REST-Call aus der DB */
+  WetterService.all().$promise
+  .then(function(data){
+	  console.log('Daten wurden geladen');
+	  console.log(data);
+	  $scope.wetterdaten = data;
+  });
+
+});

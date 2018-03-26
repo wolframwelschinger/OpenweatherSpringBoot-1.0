@@ -1,0 +1,171 @@
+package de.ww.openweather.utils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * OpenWeatherMapClient
+ * @author Wolfram Welschinger
+ * @web http://java-buddy.blogspot.com/
+ */
+public class OpenWeatherMapUtil {
+
+	static final String url_London_uk = "http://api.openweathermap.org/data/2.5/find?q=London,SW5&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+
+	static final String url_Berlin_Pankow = "http://api.openweathermap.org/data/2.5/find?q=Berlin,13187&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+
+	static final String url_Palma_de_Mallorca = "http://api.openweathermap.org/data/2.5/find?q=Palma%20de%20Mallorca&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+
+	static final String url_Alcudia = "http://api.openweathermap.org/data/2.5/find?q=Alcudia&units=metric&type=accurate&mode=json&APPID=a69fc6770115d5a82cd0d37e359ad4bf&lang=de";
+	
+	private static Logger log = LogManager.getLogger("de.ww.openweather.utils.OpenWeatherMapUtil");
+	
+	public static WetterDTO getWetter(String url) {
+		WetterDTO wetterDTO = null;
+		try {
+			URL url_weather = new URL(url);
+			String result = "";
+			HttpURLConnection httpURLConnection = (HttpURLConnection) url_weather.openConnection();
+			if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				log.debug("HTTP 200 - o.k.");
+				InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
+				BufferedReader bufferedReader = new BufferedReader(inputStreamReader, 8192);
+				String line = null;
+				while ((line = bufferedReader.readLine()) != null) {
+					result += line;
+				}
+				bufferedReader.close();
+				log.debug("Result: \n" + result);
+				wetterDTO = ParseResult(result);
+			} else {
+				log.debug("Error in httpURLConnection.getResponseCode()!!!");
+			}
+
+		} catch (MalformedURLException ex) {
+			log.error("Fehler: " + ex.getMessage());
+		} catch (IOException ex) {
+			log.error("Fehler: " + ex.getMessage());
+		} catch (JSONException ex) {
+			log.error("Fehler: " + ex.getMessage());
+		}
+		return wetterDTO;
+	}
+	
+
+	/**
+	 * Parst die JSON-Anwort von OpenWeatherMap
+	 * @param json JSON-Antwort
+	 * @return WetterDTO
+	 * @throws JSONException
+	 */
+	static private WetterDTO ParseResult(String json) throws JSONException {
+
+		String parsedResult = "";
+		WetterDTO wetterDTO = new WetterDTO();
+		
+		JSONObject jsonObject = new JSONObject(json);
+
+		parsedResult += "Number of object = " + jsonObject.length() + "\n\n";
+
+		String result = "";
+		
+		// List
+		JSONArray jsonList = jsonObject.getJSONArray("list");
+		//for (int i = 0; i < jsonList.length(); i++) {
+		for (int i = 0; i < 1; i++) {
+	
+
+			
+			JSONObject jsonObj = (JSONObject) jsonList.get(i);
+
+			// name
+			String name = (String) jsonObj.get("name");
+			wetterDTO.setOrt(name);
+
+			// sys
+			JSONObject jsonSys = jsonObj.getJSONObject("sys");
+			String country = jsonSys.getString("country");
+			wetterDTO.setLand(country);
+			
+			// System.out.println("Sonnenaufgang : " + jsonSys.getInt("sunrise"));
+			// System.out.println("Sonnenuntergang : " + jsonSys.getInt("sunset"));			
+			
+			// geografische Koordinaten
+			JSONObject jsonCoord = jsonObj.getJSONObject("coord");
+			double lat = jsonCoord.getDouble("lat");
+			double lon = jsonCoord.getDouble("lat");
+			wetterDTO.setGeoLaenge(lon);
+			wetterDTO.setGeoBreite(lat);
+			
+			// dt
+			long dt = jsonObj.getLong("dt");
+			wetterDTO.setZeitStempel(dt);
+			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+			Date date = new Date ();
+			date.setTime((long)dt*1000);
+			wetterDTO.setZeitString(sdf.format(date));
+
+			// main
+			JSONObject jsonMain = jsonObj.getJSONObject("main");
+			wetterDTO.setTemperatur(jsonMain.getLong("temp"));
+			wetterDTO.setTemperatur_min(jsonMain.getLong("temp_min"));
+			wetterDTO.setTemperatur_max(jsonMain.getLong("temp_max"));
+			wetterDTO.setLuftDruck(jsonMain.getLong("pressure"));
+			wetterDTO.setLuftFeuchtigkeit(jsonMain.getLong("humidity"));
+			
+			JSONObject jsonWind = jsonObj.getJSONObject("wind");
+			Double result_speed = jsonWind.getDouble("speed");
+			wetterDTO.setWindGeschwindigkeit(jsonWind.getDouble("speed"));
+			try {
+				Double result_deg = jsonWind.getDouble("deg");
+				wetterDTO.setWindRichtung(result_deg);					
+			} catch (Exception e) {
+				wetterDTO.setWindRichtung(0);
+			}
+			
+
+			
+			//String result_wind = "wind\tspeed: " + result_speed + "\tdeg: " + result_deg;
+			//System.out.println("Wind             : " + result_wind);					
+
+			// clouds
+			JSONObject jsonClouds = jsonObj.getJSONObject("clouds");
+			Long clouds = jsonClouds.getLong("all");
+			wetterDTO.setWolken(jsonClouds.getLong("all"));
+
+			JSONArray jsonWeather = jsonObj.getJSONArray("weather");
+			
+			if (jsonWeather.length() > 0) {
+				WetterBeschreibung[] wetterbeschreibungen = new WetterBeschreibung[jsonWeather.length()];
+				for (int y = 0; y < jsonWeather.length(); y++) {
+					JSONObject jsonObjWeather = (JSONObject) jsonWeather.get(y);
+					Iterator<String> it = jsonObjWeather.keys();
+					//http://openweathermap.org/img/w/04d.png
+					wetterbeschreibungen[y] = new WetterBeschreibung(y, jsonObjWeather.getString("main"), jsonObjWeather.getString("description")
+							, "http://openweathermap.org/img/w/" + jsonObjWeather.getString("icon") + ".png");
+				}
+				wetterDTO.setWetterbeschreibungen(wetterbeschreibungen);
+			} else {
+				log.info("Keine weiteren Wetterinformationen");
+			}
+			
+		}
+
+		return wetterDTO;
+
+	}
+	
+}

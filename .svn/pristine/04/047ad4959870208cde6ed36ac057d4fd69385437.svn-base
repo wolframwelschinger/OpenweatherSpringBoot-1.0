@@ -1,0 +1,50 @@
+<h2 ng-show="isAdmin">Administrationsbereich</h2>
+
+<!--  
+<input type="text" placeholder="Suchen..."
+       ng-model="searchText" />
+<br /><br />
+-->
+<!--
+<p style="font-color: #ffffff;">&Uuml;bersicht</p>
+-->
+<br />
+<div>
+	<table class="table table-striped" style="background-color: rgba(255, 255, 255, 0.8);">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<th>Ort</th>
+				<th>Land</th>
+				<th></th>
+			</tr>
+			<tr data-ng-repeat="daten in wetterdaten">
+				<td data-ng-bind="daten.Id"></td>
+				<td data-ng-bind="daten.ort"></td>
+				<td data-ng-bind="daten.land"></td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+</div>
+
+<!--
+<p ng-show="isAdmin">
+    <a class="bm-new-book-link" ng-href="#!/admin/books/new">
+        Neues Buch anlegen
+    </a>
+</p>
+-->
+
+<!--
+  WW:
+  ng-repeat kann durch Pipes Filtern und Sortieren.
+
+  Die Sortierung wird durch orderBy: eingeleitet, dem folgt das Attribut,
+  nach dem gefiltert werden soll
+
+  Der Filter besteht wieder aus einem Pipe, und wird mt filter: eingeleitet.
+  Uebergeben wird das Attribut aus dem ng-model des Texteingabefeldes.
+  Infolge des Two-Way-Bindings wird die Tabelle sofort bei Aktualisierung des
+  Texteingabefeldes (erneut) gefiltert.
+-->

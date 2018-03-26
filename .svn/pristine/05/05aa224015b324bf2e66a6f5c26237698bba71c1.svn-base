@@ -1,0 +1,44 @@
+"use strict";
+
+/*
+ * Fragt ueber den Service WetterService die Wetterdaten aus der DB ab
+ * 
+ */
+wetterApp.controller('OrtDetailCtrl', function($scope, $resource, $cookies, $locale, OrtService) {
+
+  $scope.isAdmin = true;
+  var isDeleting = false;
+  var isSaving = false;
+  var isEditing = false;
+
+  $scope.onSave = function(data){
+	  console.log('onSave: ' + data.id);
+	  
+	  isSaving = true;
+	  isEditing = false;	  
+	  
+	  // do save
+	  OrtService['save'](null, data).$promise
+		.then(function(data) {
+			console.log('saving succeeded: ' + angular.toJson(data));
+			isSaving = false;
+			
+			/*
+			// Laden der Werte aus der Datenbank
+			model.filter.id = data.id;
+			$log.debug('loading ' + model.filter.id);
+			$scope.load();
+			*/
+		})
+		.catch(function(err) {
+			console.log('saving failed: ' + angular.toJson(err.data || err));
+			isSaving = false;
+	
+			/*
+			// Laden der Werte aus der Datenbank
+			$scope.load();
+			*/
+		});	  
+  }
+
+});

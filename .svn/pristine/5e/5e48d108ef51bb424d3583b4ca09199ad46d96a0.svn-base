@@ -1,0 +1,85 @@
+<h2 ng-show="isAdmin">Administrationsbereich</h2>
+
+<!--  
+<input type="text" placeholder="Suchen..."
+       ng-model="searchText" />
+<br /><br />
+-->
+<!--
+<p style="font-color: #ffffff;">&Uuml;bersicht</p>
+-->
+<br />
+<div>
+	<table class="table table-striped" style="background-color: rgba(255, 255, 255, 0.8);">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<th>Ort</th>
+				<th>Land</th>
+				<!-- 
+				<th>geogr. L&auml;nge</th>
+				<th>geogr. Breite</th>
+				-->
+				<th>Zeit</th>
+				<th>Temp.</th>
+				<th>Temp. (min)</th>
+				<th>Temp. (max)</th>
+				<th>Luftfeuchtigkeit</th>
+				<th>Luftdruck</th>
+				<th>Windgeschw.</th>
+				<th>Windricht</th>
+				<th>Wolken</th>
+				<th>Wetterlage</th>
+				<th></th>
+			</tr>
+			<tr data-ng-repeat="daten in wetterdaten">
+				<td data-ng-bind="daten.id"></td>
+				<td data-ng-bind="daten.ort"></td>
+				<td data-ng-bind="daten.land"></td>
+				<!-- 
+				<td data-ng-bind="daten.geoLaenge"></td>
+				<td data-ng-bind="daten.geoBreite"></td>
+				-->
+				<td data-ng-bind="daten.zeitString"></td>
+				<td data-ng-bind="daten.temperatur"></td>
+				<td data-ng-bind="daten.temperatur_min"></td>
+				<td data-ng-bind="daten.temperatur_max"></td>
+				<td data-ng-bind="daten.luftFeuchtigkeit"></td>
+				<td data-ng-bind="daten.luftDruck"></td>
+				<td data-ng-bind="daten.windGeschwindigkeit"></td>
+				<td data-ng-bind="daten.windRichtung"></td>
+				<td data-ng-bind="daten.wolken"></td>
+				<td data-ng-bind="daten.wetterbeschreibung"></td>
+				<td><img data-ng-src="{{daten.iconUrl}}" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+		<div style="background-color: rgba(255, 255, 255, 0.8); margin: 0px; padding: 10px;">
+			<div style="text-align: center; margin: 10px;">
+				<ng-include src="'appscripts/common/pager.html'"></ng-include>
+			</div>
+		</div>	
+
+</div>
+
+<!--
+<p ng-show="isAdmin">
+    <a class="bm-new-book-link" ng-href="#!/admin/books/new">
+        Neues Buch anlegen
+    </a>
+</p>
+-->
+
+<!--
+  WW:
+  ng-repeat kann durch Pipes Filtern und Sortieren.
+
+  Die Sortierung wird durch orderBy: eingeleitet, dem folgt das Attribut,
+  nach dem gefiltert werden soll
+
+  Der Filter besteht wieder aus einem Pipe, und wird mt filter: eingeleitet.
+  Uebergeben wird das Attribut aus dem ng-model des Texteingabefeldes.
+  Infolge des Two-Way-Bindings wird die Tabelle sofort bei Aktualisierung des
+  Texteingabefeldes (erneut) gefiltert.
+-->

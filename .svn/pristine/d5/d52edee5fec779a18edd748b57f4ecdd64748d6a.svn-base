@@ -1,0 +1,114 @@
+"use strict";
+
+/* Fragt mit Hilfe des Services WetterOnlineService Wetterinformationen über die OpenweatherMap-REST-Schnittstelle aus dem Internet ab
+ * 
+ */
+wetterApp.controller('WetterOnlineByOrtSelectionCtrl', function($scope, $log, $routeParams, $resource, $cookies, $locale, WetterOnlineService
+		, Flash, OrtService) {
+
+	var ort = $routeParams.ort;
+	$scope.isAdmin = false;
+	$scope.orte = {};
+ 
+	$log.debug('+++ Ort: ' + ort);
+	$log.debug('+++ Locale: ' + $locale.id);
+
+	
+	
+	/**
+	 * Wechsel der Auswahl des Ortes feststellen
+	 */
+    $scope.onOrtChanged = function() {
+        $log.debug('Wechsel des Ortes: ' + $scope.selectedOrt.ort);
+        $scope.selectedOrtId = $scope.selectedOrt.id;
+        $log.debug('Wechsel des Ortes: ' + $scope.selectedOrt.ort + ' (id=' + $scope.selectedOrtId + ')');
+        // Wetterdaten laden
+        if ($scope.selectedOrtId != undefined){
+        		$scope.loadWetterdaten();
+        }
+    }  	
+	
+    /**
+     * Wetterdaten aktualisieren
+     */
+    $scope.loadWetterdaten = function() {
+        $log.debug('loadWetterdaten() - Laden der Wetterdaten des Ortes mit PK=' + $scope.selectedOrtId + ')');
+	    	WetterOnlineService['byOrtId']({id: $scope.selectedOrtId}).$promise
+	    	.then(function(data){
+	    		$log.debug('Oline-Wetterdaten wurden geladen');
+	    		$scope.wetter = data;
+	    		$log.debug(data);
+	    		$log.debug(data.wetterbeschreibungen);
+	    		$log.debug(data.wetterbeschreibungen.length);
+	    		if (data.wetterbeschreibungen.length > 0){	  
+	    			$log.debug('Wetterbeschreibung vorhanden.');
+	    			$log.debug(data.wetterbeschreibungen[0].description);
+	    			$log.debug(data.wetterbeschreibungen[0].iconUrl);
+	    			$scope.wetterBeschreibung = data.wetterbeschreibungen[0].description;
+	    			$scope.wetterIconUrl = data.wetterbeschreibungen[0].iconUrl;
+	    		} else {
+	    			$log.debug('Keine Wetterbeschreibung vorhanden.');
+	    		}
+	    	  
+	    	})
+	      	.catch(function(err) {
+	      		$log.error('loading OpenWeatherMap-Data failed: ' + angular.toJson(err.data || err));
+	    		Flash.create('error', 'Fehler beim Laden der Wetterdaten aus dem Internet! - Bitte pr&uuml;fen Sie die Onlineverbindung! - ' + err);
+	    	});;      	
+    }
+    
+    
+    /**
+     * Fetchen der Ort fuer die Combobox-Auswahl
+     */
+    $scope.loadOrtItems = function() {
+    		$log.debug('loading Ort-Items...');
+    	    var paramsOrt = { 'sort': { 'orderBy' : 'ort', 'reverse' : false }};
+		OrtService['get'](paramsOrt).$promise
+		.then(function(data){
+			$log.debug('Ort-Daten: ' + data);
+			$scope.orte = data.content;
+			for (var i=0; i < $scope.orte.length; i++){
+				$log.debug(i + '. Ort: ' + $scope.orte[i].ort);
+			}
+			$scope.selectedOrt = $scope.orte[0];
+			$log.debug('selectedOrt ' + $scope.selectedOrt.ort);
+		})
+		.catch(function(err){
+	 		$log.error('loading Ort-Data for listbox failed: ' + angular.toJson(err.data || err));
+		});
+    }
+    
+
+	
+	// Default-Aktionen
+	$scope.loadOrtItems();
+	
+	if ($scope.selectedOrtId == undefined){
+		$scope.selectedOrtId=1;
+	}
+    $log.debug('Laden der Wetterdaten des Ortes mit PK=' + $scope.selectedOrtId);
+	WetterOnlineService['byOrtId']({id: $scope.selectedOrtId}).$promise
+	.then(function(data){
+		$log.debug('Oline-Wetterdaten wurden geladen');
+		$scope.wetter = data;
+		$log.debug(data);
+		$log.debug(data.wetterbeschreibungen);
+		$log.debug(data.wetterbeschreibungen.length);
+		if (data.wetterbeschreibungen.length > 0){	  
+			$log.debug('Wetterbeschreibung vorhanden.');
+			$log.debug(data.wetterbeschreibungen[0].description);
+			$log.debug(data.wetterbeschreibungen[0].iconUrl);
+			$scope.wetterBeschreibung = data.wetterbeschreibungen[0].description;
+			$scope.wetterIconUrl = data.wetterbeschreibungen[0].iconUrl;
+		} else {
+			$log.debug('Keine Wetterbeschreibung vorhanden.');
+		}
+	  
+	})
+  	.catch(function(err) {
+  		$log.error('loading OpenWeatherMap-Data failed: ' + angular.toJson(err.data || err));
+		Flash.create('error', 'Fehler beim Laden der Wetterdaten aus dem Internet! - Bitte pr&uuml;fen Sie die Onlineverbindung! - ' + err);
+	});;  
+
+});

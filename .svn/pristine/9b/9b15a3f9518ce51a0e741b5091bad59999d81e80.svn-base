@@ -1,0 +1,86 @@
+<h2 ng-show="isAdmin">Administrationsbereich</h2>
+
+<!--  
+<input type="text" placeholder="Suchen..."
+       ng-model="searchText" />
+<br /><br />
+-->
+<!--
+<p style="font-color: #ffffff;">&Uuml;bersicht</p>
+-->
+<br />
+
+<!-- Fortschrittsanzeige fuer das Laden der Daten -->
+<div class="progress" data-ng-show="query.isLoading('wetteraufzeichnung')"> 
+	<div class="progress-bar progress-bar-striped active"
+             role="progressbar" style="width: 100%">Lade Wetteraufzeichnungen...</div>
+</div>
+
+<!-- Table-Container fuer Liste -->
+<div class="table-container">
+	<table class="table table-striped" style="background-color: rgba(255, 255, 255, 0.8);">
+		<tbody>
+			<tr>
+                <th class="col-sm-1"><data-ng-include src="'appscripts/common/column-header.html'" data-ng-if="true" data-ng-init="column = {label:'Id',orderField:'id'}"></data-ng-include></th>
+                <th class="col-sm-2"><data-ng-include src="'appscripts/common/column-header.html'" data-ng-if="true" data-ng-init="column = {label:'Ort',orderField:'ort'}"></data-ng-include></th>
+                <th class="col-sm-1"><data-ng-include src="'appscripts/common/column-header.html'" data-ng-if="true" data-ng-init="column = {label:'Land',orderField:'land'}"></data-ng-include></th>
+				<!-- Achtung: Zeit nicht nach zeitString sondern nach zeitStempel sortieren! -->
+                <th class="col-sm-1"><data-ng-include src="'appscripts/common/column-header.html'" data-ng-if="true" data-ng-init="column = {label:'Zeit',orderField:'zeitStempel'}"></data-ng-include></th>
+                <th class="col-sm-1"><data-ng-include src="'appscripts/common/column-header.html'" data-ng-if="true" data-ng-init="column = {label:'Temp.',orderField:'temperatur'}"></data-ng-include></th>
+				<th class="col-sm-1">Luftf. [%]</th>
+				<th class="col-sm-1">Luftdr.</th>
+				<th class="col-sm-1">Windgeschw.</th>
+				<th class="col-sm-1">Windr.</th>
+				<th class="col-sm-1">Wolken</th>
+				<th class="col-sm-1">Wetterlage</th>
+				
+				<th></th>
+			</tr>
+			<tr data-ng-repeat="daten in wetterdaten">
+				<td class="col-sm-1" data-ng-bind="daten.id"></td>
+				<td class="col-sm-2" data-ng-bind="daten.ort"></td>
+				<td class="col-sm-1" data-ng-bind="daten.land"></td>
+				<!-- 
+				<td data-ng-bind="daten.geoLaenge"></td>
+				<td data-ng-bind="daten.geoBreite"></td>
+				-->
+				<td class="col-sm-1" data-ng-bind="daten.zeitString"></td>
+				<td class="col-sm-1" data-ng-bind="daten.temperatur"></td>
+				<td class="col-sm-1" data-ng-bind="daten.luftFeuchtigkeit"></td>
+				<td class="col-sm-1" data-ng-bind="daten.luftDruck"></td>
+				<td class="col-sm-1" data-ng-bind="daten.windGeschwindigkeit"></td>
+				<td class="col-sm-1" data-ng-bind="daten.windRichtung"></td>
+				<td class="col-sm-1" data-ng-bind="daten.wetterbeschreibung"></td>
+				<td class="col-sm-1"><img data-ng-src="{{daten.iconUrl}}" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+		<div style="background-color: rgba(255, 255, 255, 0.8); margin: 0px; padding: 10px;">
+			<div style="text-align: center; margin: 10px;">
+				<ng-include src="'appscripts/common/pager.html'"></ng-include>
+			</div>
+		</div>	
+
+</div>
+
+<!--
+<p ng-show="isAdmin">
+    <a class="bm-new-book-link" ng-href="#!/admin/books/new">
+        Neues Buch anlegen
+    </a>
+</p>
+-->
+
+<!--
+  WW:
+  ng-repeat kann durch Pipes Filtern und Sortieren.
+
+  Die Sortierung wird durch orderBy: eingeleitet, dem folgt das Attribut,
+  nach dem gefiltert werden soll
+
+  Der Filter besteht wieder aus einem Pipe, und wird mt filter: eingeleitet.
+  Uebergeben wird das Attribut aus dem ng-model des Texteingabefeldes.
+  Infolge des Two-Way-Bindings wird die Tabelle sofort bei Aktualisierung des
+  Texteingabefeldes (erneut) gefiltert.
+-->

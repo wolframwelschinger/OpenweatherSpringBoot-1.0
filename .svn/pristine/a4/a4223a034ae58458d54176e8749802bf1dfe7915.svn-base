@@ -1,0 +1,31 @@
+"use strict";
+
+var wetterApp = angular.module('wetterApp', [
+  'ngRoute'
+  , 'ngResource'
+  , 'ngAnimate'
+  //, 'ngTouch'
+  , 'ui.bootstrap'  // <-- UI Bootstrap
+  /*, 'core'*/
+  , 'ngCookies'
+  , 'ngLocale'
+]);
+
+console.log('app.js');
+
+wetterApp.config(function ($routeProvider) {
+    console.log('config: ' + $routeProvider); 
+    /* Liest die gepeicherten Wetterdaten aus der DB */
+    $routeProvider.when('/wetterdaten', {                  
+        templateUrl: 'templates/wetterdaten_list.html',
+        controller: 'WetterdatenListCtrl'
+    })
+    /* Fragt das Wetter an einem bestimmten Ort ab*/
+    .when('/wetterByOrt/:ort', {
+      templateUrl: 'templates/wetter.html',
+      controller: 'WetterOnlineCtrl'
+    }) 
+    .otherwise({
+      redirectTo: '/wetterdaten'
+    });
+});

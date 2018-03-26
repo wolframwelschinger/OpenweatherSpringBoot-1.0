@@ -1,0 +1,31 @@
+"use strict";
+
+wetterApp.controller('WetterOnlineCtrl', function($scope, $routeParams, $resource, $cookies, $locale, WetterOnlineService) {
+
+  var ort = $routeParams.ort;
+  $scope.isAdmin = false;
+ 
+  console.log('+++ Ort: ' + ort);
+  console.log('+++ Locale: ' + $locale.id);
+  
+  WetterOnlineService.berlin_pankow().$promise
+  .then(function(data){
+	  console.log('Daten wurden geladen');
+	  $scope.wetter = data;
+	  console.log(data);
+	  console.log(data.wetterbeschreibungen);
+	  console.log(data.wetterbeschreibungen.length);
+	  if (data.wetterbeschreibungen.length === 1){
+		  console.log('Wetterbeschreibung vorhanden.');
+		  console.log(data.wetterbeschreibungen[0].description);
+		  console.log(data.wetterbeschreibungen[0].iconUrl);
+		  $scope.wetterBeschreibung = data.wetterbeschreibungen[0].description;
+		  $scope.wetterIconUrl = data.wetterbeschreibungen[0].iconUrl;
+	  } else {
+		  console.log('Keine Wetterbeschreibung vorhanden.');
+	  }
+	  
+  });
+  
+
+});

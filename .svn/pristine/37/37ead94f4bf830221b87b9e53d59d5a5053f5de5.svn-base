@@ -1,0 +1,60 @@
+"use strict";
+
+var wetterApp = angular.module('wetterApp', [
+  'ngRoute'
+  , 'ngResource'
+  , 'ngAnimate'
+  //, 'ngTouch'
+  , 'ui.bootstrap'  // <-- UI Bootstrap
+  /*, 'core'*/
+  , 'ngCookies'
+  , 'ngLocale'
+]);
+
+console.log('app.js');
+
+wetterApp.config(function ($routeProvider) {
+    console.log('config: ' + $routeProvider); 
+    $routeProvider.when('/wetterdaten', {
+        templateUrl: 'templates/wetterdaten_list.html',
+        controller: 'WetterdatenListCtrl'
+    })
+    .when('/wetter', {
+      templateUrl: 'templates/wetter.html',
+      controller: 'WetterOnlineCtrl'
+    })
+    /*
+    $routeProvider.when('/books/:isbn', {
+        //templateUrl: 'templates/book_details_with_expressions.html',
+        templateUrl: 'templates/book_details.html',
+        controller: 'BookDetailsCtrl'
+    })
+    .when('/json/:page', {
+      templateUrl: 'templates/book_list.html',
+      controller: 'BookJsonCtrl'
+    })
+    .when('/admin/books', {
+      templateUrl: 'templates/book_list.html', //Nachnutzung des templates book_list
+      controller: 'AdminBookListCtrl'
+    })
+    .when('/admin/books/new', {
+      templateUrl: 'templates/admin/book_form.html',
+      controller: 'AdminNewBookCtrl'
+    })
+    .when('/admin/books/:isbn/edit', {
+      templateUrl: 'templates/admin/book_form.html',
+      controller: 'AdminEditBookCtrl'
+    })
+    .when('/admin/books/:isbn/delete', {
+      templateUrl: 'templates/admin/book_delete.html',
+      controller: 'AdminDeleteBookCtrl'
+    })
+    .when('/deferred', {
+      templateUrl: 'templates/deferred_object.html',
+      controller: 'DeferredObjectCtrl'
+    })
+    */
+    .otherwise({
+      redirectTo: '/wetterdaten'
+    });
+});

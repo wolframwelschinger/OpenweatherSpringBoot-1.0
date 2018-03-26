@@ -1,0 +1,9 @@
+<div class="modal-header">
+	<h3>&Uuml;ber dieses Programm</h3>
+<div class="modal-body">	
+	<p>
+		OpenWeatherSpringBoot<br />
+		Wolfram Welschinger 2017
+	</p>
+	<button class="btn btn-warning" type="button" data-ng-click="cancel()">Ok</button>
+</div>

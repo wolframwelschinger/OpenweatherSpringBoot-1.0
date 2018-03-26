@@ -1,0 +1,16 @@
+package de.ww.openweather.controllers;
+
+public class DeleteResult {
+
+	private Object deletedId;
+
+	public DeleteResult(Object deletedId) {
+		super();
+		this.deletedId = deletedId;
+	}
+
+	public Object getDeletedId() {
+		return deletedId;
+	}
+	
+}

@@ -1,0 +1,21 @@
+package de.ww.openweather.controllers;
+
+/**
+ * Klasse f&uuml; das JSON-Response beim L&ouml;schen einer Entit&auml;t
+ * 
+ * @author Michael Engelhardt, Wolfram Welschinger
+ */
+public class DeleteResult {
+
+	private Object deletedId;
+
+	public DeleteResult(Object deletedId) {
+		super();
+		this.deletedId = deletedId;
+	}
+
+	public Object getDeletedId() {
+		return deletedId;
+	}
+	
+}

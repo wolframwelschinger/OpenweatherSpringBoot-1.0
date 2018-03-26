@@ -1,0 +1,83 @@
+package de.ww.openweather.controllers.param;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
+
+/**
+ * Parameter-Klasse f&uuml;r das Sortierung von JPA-Datasets
+ * @author wolfram
+ *
+ */
+public class SortParam {
+
+	public static final String DEFAULT_ORDER_BY = "id";
+
+	public static Order createOrder(Direction dir, String field, boolean ignoreCase) {
+		Order o = new Order(dir, field);
+		return ignoreCase ? o.ignoreCase() : o;
+	}
+
+	private String orderBy;
+	private boolean reverse;
+	private boolean ignoreCase;
+
+	public SortParam() {
+		this(DEFAULT_ORDER_BY);
+	}
+
+	public SortParam(String orderBy) {
+		this(orderBy, false);
+	}
+
+	public SortParam(String orderBy, boolean reverse) {
+		this(orderBy, reverse, false);
+	}
+
+	public SortParam(String orderBy, boolean reverse, boolean ignoreCase) {
+		this.orderBy = orderBy;
+		this.reverse = reverse;
+		this.ignoreCase = ignoreCase;
+	}
+
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	public boolean isReverse() {
+		return reverse;
+	}
+
+	public void setReverse(boolean reverse) {
+		this.reverse = reverse;
+	}
+
+	public Direction getDirection() {
+		return isReverse() ? Direction.DESC : Direction.ASC;
+	}
+
+	public boolean isIgnoreCase() {
+		return ignoreCase;
+	}
+
+	public void setIgnoreCase(boolean ignoreCase) {
+		this.ignoreCase = ignoreCase;
+	}
+
+	/**
+	 * @see #createOrder(Direction, String, boolean)
+	 */
+	public Sort toDataSort() {
+		return new Sort(createOrder(getDirection(), getOrderBy(), isIgnoreCase()));
+	}
+
+	@Override
+	public String toString() {
+		return "SortParam [orderBy=" + orderBy + ", reverse=" + reverse + ", ignoreCase=" + ignoreCase + "]";
+	}
+	
+}

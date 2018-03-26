@@ -1,0 +1,15 @@
+"use strict";
+
+wetterApp.controller('WetterListCtrl', function($scope, $resource, $cookies, $locale, WetterService) {
+
+  $scope.isAdmin = false;
+  console.log('+++ Locale: ' + $locale.id);
+
+  WetterService[all]().$promise
+  .then(function(data){
+	  console.log('Daten wurden geladen');
+	  /* $scope.wetterdaten */ 
+  });
+  
+
+});

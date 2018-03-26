@@ -1,0 +1,40 @@
+<br />
+<div style="background-color: rgba(255, 255, 255, 0.8); margin: 10px;">
+	<div style="margin: 10px;">
+		<div style="text-align: center; margin: 10px;">
+			<h3>Reports</h3>
+		</div>
+		<form class="form form-flex" name="ortForm">
+			<div class="form-group">
+				<div class="container-fluid">
+		
+				</div>
+			</div>
+		</form>
+		
+		<!-- Buttons -->
+		<div style="text-align: center; margin: 10px;">
+			<span data-ng-hide="isSubmitting()">
+				<span data-ng-hide="isNew">
+					<!-- Lesemodus -->
+					<button data-ng-hide="isNew()" type="button" class="btn btn-primary" title="Bearbeiten"   data-ng-click="onEdit()">Bearbeiten</button>
+					<button data-ng-hide="isNew()" type="button" class="btn btn-danger" title="L&ouml;schen" data-ng-click="onDelete(ort, deleteNote)">L&ouml;schen</button>
+					<button data-ng-hide="isNew()" type="button" class="btn btn-default" title="Zur&uuml;ck"  data-ng-click="onBack()">Zur&uuml;ck</button>
+				</span>
+				<span data-ng-show="isNew">
+					<!-- Neuanlage -->
+					<button data-ng-show="isNew()" type="button" class="btn btn-primary" title="Anlegen"   data-ng-click="onSave(ort)" data-ng-disabled="anwendungForm.$invalid">Anlegen</button>
+					<button data-ng-show="isNew()" type="button" class="btn btn-default" title="Abbrechen" data-ng-click="onCancel()">Abbrechen</button>
+			
+					<!-- Aenderungsmodus -->
+					<button data-ng-hide="isNew()" type="button" class="btn btn-primary" title="Speichern" data-ng-click="onSave(ort)" data-ng-disabled="anwendungForm.$invalid">Speichern</button>
+					<button data-ng-hide="isNew()" type="button" class="btn btn-default" title="Abbrechen" data-ng-click="onCancel()">Abbrechen</button>
+				</span>
+			</span>
+			<i data-ng-show="isSubmitting()" class="fa fa-spinner fa-pulse fa-fw"></i>
+		</div>
+				
+	</div>	
+</div>
+
+

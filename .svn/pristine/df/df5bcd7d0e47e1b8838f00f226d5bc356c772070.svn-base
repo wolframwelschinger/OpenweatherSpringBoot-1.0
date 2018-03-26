@@ -1,0 +1,121 @@
+<h2 ng-show="isAdmin">Administrationsbereich</h2>
+
+
+<br />
+<div>
+<div style="background-color: #ffffff;">
+	<h3>Ort</h3>
+	<form class="form form-flex" name="ortForm">
+		<div class="form-group">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-2 form-control-static"><b>ID</b></div>
+					<div class="col-sm-10">{{ort.id}}</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-2 form-control-static"><b>Ort</b></div>
+					<div class="col-sm-10 control-group" data-ng-class="{'has-error': ortForm.ort.$invalid}">
+						<input class="form-control" id="ort" name="ort" type="text" 
+								placeholder="Ort" 
+								data-ng-model="ort.ort"
+								data-ng-required="true"
+								data-ng-maxlength="30"
+								data-auto-focus>
+						<div role="alert">
+							<span class="help-block error" data-ng-show="ortForm.ort.$error.maxlength && !ortForm.ort.$pristine">Maximal 30 Zeichnen erlaubt.</span>
+							<span class="help-block error" data-ng-show="ortForm.ort.$error.required && !ortForm.ort.$pristine">Bitte geben Sie einen Ort ein.</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-2 form-control-static"><b>Land</b></div>
+					<div class="col-sm-10 control-group" data-ng-class="{'has-error': ortForm.land.$invalid}">
+						<input class="form-control" id="land" name="land" type="text" 
+								placeholder="Land" 
+								data-ng-model="ort.land"
+								data-ng-required="true"
+								data-ng-maxlength="30"
+								data-auto-focus>
+						<div role="alert">
+							<span class="help-block error" data-ng-show="ortForm.land.$error.maxlength && !ortForm.land.$pristine">Maximal 30 Zeichnen erlaubt.</span>
+							<span class="help-block error" data-ng-show="ortForm.land.$error.required && !ortForm.land.$pristine">Bitte geben Sie ein Land ein.</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-2 form-control-static"><b>URL Wetter</b></div>
+					<div class="col-sm-10 control-group" data-ng-class="{'has-error': ortForm.urlOpenweatherOrtAktuell.$invalid}">
+						<input class="form-control" id="urlOpenweatherOrtAktuell" name="urlOpenweatherOrtAktuell" type="text" 
+								placeholder="URL aktuelles Wetter" 
+								data-ng-model="ort.urlOpenweatherOrtAktuell"
+								data-ng-required="true"
+								data-ng-maxlength="100"
+								data-auto-focus>
+						<div role="alert">
+							<span class="help-block error" data-ng-show="ortForm.urlOpenweatherOrtAktuell.$error.maxlength && !ortForm.urlOpenweatherOrtAktuell.$pristine">Maximal 30 Zeichnen erlaubt.</span>
+							<span class="help-block error" data-ng-show="ortForm.urlOpenweatherOrtAktuell.$error.required && !ortForm.urlOpenweatherOrtAktuell.$pristine">Bitte geben Sie einen URL f&uuml;r das aktuelle Wetter ein.</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-2 form-control-static"><b>URL Wettervorhersage</b></div>
+					<div class="col-sm-10 control-group" data-ng-class="{'has-error': ortForm.ort.$invalid}">
+						<input class="form-control" id="urlOpenweatherOrtVorhersage" name="urlOpenweatherOrtVorhersage" type="text" 
+								placeholder="URL Wettervorhersage" 
+								data-ng-model="ort.urlOpenweatherOrtVorhersage"
+								data-ng-required="true"
+								data-ng-maxlength="100"
+								data-auto-focus>
+						<div role="alert">
+							<span class="help-block error" data-ng-show="ortForm.urlOpenweatherOrtVorhersage.$error.maxlength && !ortForm.urlOpenweatherOrtVorhersage.$pristine">Maximal 30 Zeichnen erlaubt.</span>
+							<span class="help-block error" data-ng-show="ortForm.urlOpenweatherOrtVorhersage.$error.required && !ortForm.urlOpenweatherOrtVorhersage.$pristine">Bitte geben Sie einen URL f&uuml;r die Vorhersage ein.</span>
+						</div>
+					</div>
+				</div>						
+								
+				<!-- 								
+				<div class="row">
+					<div class="col-sm-2 form-control-static"><b>Ort</b></div>
+					<div class="col-sm-10 form-control-static" data-ng-hide="isEditing()">{{ort.ort}}</div>
+					<div class="col-sm-10 control-group" data-ng-class="{'has-error': ortForm.ort.$invalid}">
+						<input class="form-control" id="name" name="ort" type="text" 
+								placeholder="Ort" 
+								data-ng-hide="!isEditing()"
+								data-ng-model="ort.ort"
+								data-ng-model-options="{getterSetter: true, allowInvalid: true}"
+								data-ng-required="true"
+								data-ng-maxlength="30"
+								data-auto-focus>
+						<div role="alert">
+							<span class="help-block error" data-ng-show="ortForm.name.$error.maxlength && !ortForm.ort.$pristine">Maximal 30 Zeichnen erlaubt.</span>
+							<span class="help-block error" data-ng-show="ortForm.name.$error.required && !ortForm.ort.$pristine">Bitte geben Sie einen Namen ein.</span>
+						</div>
+					</div>
+				</div>
+				-->				
+			</div>
+		</div>
+	</form>
+	
+	<!-- Buttons -->
+	<span data-ng-hide="isSubmitting()">
+		<span data-ng-hide="true">
+			<!-- Lesemodus -->
+			<button data-ng-hide="isNew()" type="button" class="btn btn-primary" title="Bearbeiten"   data-ng-click="onEdit()">Bearbeiten</button>
+			<button data-ng-hide="isNew()" type="button" class="btn btn-danger" title="L&ouml;schen" data-ng-click="onDelete(ort, deleteNote)">L&ouml;schen</button>
+			<button data-ng-hide="isNew()" type="button" class="btn btn-default" title="Zur&uuml;ck"  data-ng-click="onBack()">Zur&uuml;ck</button>
+		</span>
+		<span data-ng-show="true">
+			<!-- Neuanlage -->
+			<button data-ng-show="isNew()" type="button" class="btn btn-primary" title="Anlegen"   data-ng-click="onSave(ort)" data-ng-disabled="anwendungForm.$invalid">Anlegen</button>
+			<button data-ng-show="isNew()" type="button" class="btn btn-default" title="Abbrechen" data-ng-click="onBack()">Abbrechen</button>
+	
+			<!-- Aenderungsmodus -->
+			<button data-ng-hide="isNew()" type="button" class="btn btn-primary" title="Speichern" data-ng-click="onSave(ort)" data-ng-disabled="anwendungForm.$invalid">Speichern</button>
+			<button data-ng-hide="isNew()" type="button" class="btn btn-default" title="Abbrechen" data-ng-click="onCancel()">Abbrechen</button>
+		</span>
+	</span>
+	<i data-ng-show="isSubmitting()" class="fa fa-spinner fa-pulse fa-fw"></i>	
+</div>
+
+
