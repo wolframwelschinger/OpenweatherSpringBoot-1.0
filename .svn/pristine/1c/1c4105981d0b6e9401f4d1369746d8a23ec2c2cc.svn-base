@@ -1,9 +1,0 @@
-package de.ww.openweather.utils.repositories;
-
-import org.springframework.data.repository.PagingAndSortingRepository;
-
-import de.ww.openweather.utils.persistence.Wetteraufzeichnung;
-
-public interface WetteraufzeichnungRepository extends PagingAndSortingRepository<Wetteraufzeichnung, Long>{
-
-}
