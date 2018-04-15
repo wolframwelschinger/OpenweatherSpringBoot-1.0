@@ -308,14 +308,17 @@ public class OpenWeatherMapUtil {
 
 		HashMap<String, WettervorhersageTileDTO> vorhersageMap
 				= new HashMap<String, WettervorhersageTileDTO>();				//HasMap für Tile-DTOs (Key=Datum)
-		List<WettervorhersageEintragDTO> vorhersagen = dto.getWeather();	//List mit Wettervorhersagedatensaetzen
-		String tmpDatum = null;											// aktuelles Schleifendatum
+
+		List<WettervorhersageEintragDTO> vorhersagenAllList = dto.getWeather();		//List mit Wettervorhersagedatensaetzen
+		List<WettervorhersageEintragDTO> vorhersagenTmpList = new ArrayList<>();	//List mit Wettervorhersagedatensaetzen eines Tages
+
+		String tmpDatum = null;												// aktuelles Schleifendatum
 		String tmpDatumOld = "";											// altes Schleifendatum
-		ArrayList<Double> tempList = null;								// List mit Temperaturwerten
+
 		WettervorhersageTileDTO tileDTO = null;
 
 		// Iteration ueber die einzelnen Vohersagedatensaetze
-		for (WettervorhersageEintragDTO vorhersage : vorhersagen) {
+		for (WettervorhersageEintragDTO vorhersage : vorhersagenAllList) {
 
 			tmpDatum = vorhersage.getDtString().substring(0, 10);
 
@@ -323,7 +326,7 @@ public class OpenWeatherMapUtil {
 			if (!tmpDatum.equals(tmpDatumOld)) {
 
 				// Datumswechsel mit gefuellter Temperatur-Liste --> Tageszusammenfassung
-				if (tempList != null && tempList.size() > 0) {
+				if (vorhersagenTmpList != null && vorhersagenTmpList.size() > 0) {
 					log.debug("+++++Zusammenfassung fuer den "
 							+ tileDTO.getDatumString() + ": "
 							+ ", DTO: "  + tileDTO.toString());
@@ -331,28 +334,28 @@ public class OpenWeatherMapUtil {
 					vorhersageMap.put(tileDTO.getDatumString(), tileDTO);
 				}
 
-				// Datumswechsel, (neue) Tile-DTO anlegen
+
+				// Datumswechsel, tempListe-leeren, (neue) Tile-DTO anlegen
 				log.info("\n\n>----- Neues Datum: " + tmpDatum);
-				tempList = new ArrayList<Double>();
+				vorhersagenTmpList.clear();
 				tileDTO = new WettervorhersageTileDTO();
 				tileDTO.setDatumString(tmpDatum);
 				tileDTO.setOrt(dto.getCityName() + ", " + dto.getCityCountry());
 				tileDTO.setBeschreibung(vorhersage.getWeather()[0].getDescription());
 				tileDTO.setIconUrl(vorhersage.getWeather()[0].getIconUrl());
-				tempList.add(vorhersage.getTemp());
+				vorhersagenTmpList.add(vorhersage);
 			}
 
 			// Temparatur hinzufuegen, Sortierung erneuern
-			tempList.add(vorhersage.getTemp());
-			tempList.sort(new DoubleComparator());
+			vorhersagenTmpList.add(vorhersage);
+			vorhersagenTmpList.sort(new WettervorhersageEintragDTOComperator());
 
 			// DTO befuellen
-			tileDTO.setTempMin(tempList.get(0));
-			tileDTO.setTempMax(tempList.get(tempList.size()-1));
+			tileDTO.setTempMin(vorhersagenTmpList.get(0).getTemp_min());
+			tileDTO.setTempMax(vorhersagenTmpList.get(vorhersagenTmpList.size() -1).getTemp_max());
 			tileDTO.setBeschreibung(vorhersage.getWeather()[0].getDescription());
-			if (vorhersage.getDtString().indexOf("13:00") > -1) {
-				tileDTO.setIconUrl(vorhersage.getWeather()[0].getIconUrl());
-			}
+
+			tileDTO.setIconUrl(vorhersagenTmpList.get(vorhersagenTmpList.size() -1).getWeather()[0].getIconUrl());
 
 			log.debug("----- Datum: " + vorhersage.getDtString() + ", DTO: "
 					+ tileDTO.toString());
@@ -362,7 +365,7 @@ public class OpenWeatherMapUtil {
 		}
 
 		// Zusammenfassung letztes Datums
-		if (tempList != null && tempList.size() > 0) {
+		if (vorhersagenTmpList != null && vorhersagenTmpList.size() > 0) {
 			log.debug("+++++ Zusammenfassung fuer den "
 					+ tileDTO.getDatumString() + ": "
 					+ ", DTO: "  + tileDTO.toString());
@@ -490,22 +493,16 @@ public class OpenWeatherMapUtil {
 	}
 
 	/**
-	 * Double-Comparator
-	 * @author Wolfram
+	 * Vergleicht die Temperatur-Werte der WettervorhersageEintragDTO-Objekte o1, o2.
 	 *
+	 * @return o1 < o2 --> -1; o1 = o2 --> 0; o1 > o2 1
 	 */
-	static class DoubleComparator implements Comparator<Double>{
+	static class WettervorhersageEintragDTOComperator implements Comparator<WettervorhersageEintragDTO>{
 
-		/**
-		 * Vergleicht die Double-Werte o1, o2.
-		 *
-		 * @return o1 < o2 --> -1; o1 = o2 --> 0; o1 > o2 1
-		 */
-		@Override
-		public final int compare(Double o1, Double o2) {
-			if (o1.doubleValue() < o2.doubleValue()) {
+		public final int compare(WettervorhersageEintragDTO o1, WettervorhersageEintragDTO o2){
+			if (o1.getTemp_max() < o2.getTemp_max()) {
 				return -1;
-			} else if (o1.doubleValue() > o2.doubleValue()) {
+			} else if (o1.getTemp_max() > o2.getTemp_max()) {
 				return 1;
 			} else {
 				return 0;
